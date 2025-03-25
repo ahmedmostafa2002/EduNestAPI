@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmpty, IsNotEmpty, IsOptional, Min, MinLength } from "class-validator";
 
-export class EmployeeRequest {
+export class TeacherRequest {
 
     @ApiProperty()
     @IsNotEmpty()
@@ -12,19 +12,17 @@ export class EmployeeRequest {
     salary: number;
 
     @ApiProperty()
-    @Min(16)
+    @Min(24)
     age: number;
 
-    @ApiProperty()
-    projects: number[];
 }
 
-export class Employee extends EmployeeRequest {
+export class Teacher extends TeacherRequest {
     @ApiProperty()
     id: number;
 }
 
-export class EmployeeUpdateRequest{
+export class TeacherUpdateRequest{
    
     @ApiProperty()
     @IsOptional()

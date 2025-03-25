@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { StudentsModule } from './modules/employees/employees.module';
-import { ProjectsModule } from './modules/projects/projects.module';
+import { TeachersModule } from './modules/teachers/teachers.module';
+import { SchoolsModule } from './modules/schools/schools.module';
 
 
 @Module({
-  imports: [StudentsModule,ProjectsModule],
+  imports: [TeachersModule,SchoolsModule],
   controllers: [],
   providers: [],
 })
