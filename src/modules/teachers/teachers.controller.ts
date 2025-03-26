@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseFloatPipe, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseFloatPipe, ParseIntPipe, Patch, Post, Put } from "@nestjs/common";
 import { TeacherService } from "./teachers.service";
-import { ApiResponse } from "@nestjs/swagger";
-import { Teacher, TeacherRequest, TeacherUpdateRequest } from "src/utiles/teacherTypes";
+import { ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
+import { Teacher, TeacherRequest, TeacherSignInRequest, TeacherUpdateRequest } from "src/utiles/teacherTypes";
 
 
 @Controller('/Teachers')
@@ -12,6 +12,7 @@ export class TeacherController{
         type: Teacher,
         isArray: true
     })
+    @ApiBearerAuth()
     @Get('/')
     getTeachers(){
         return this.TeacherService.getTeachers();
@@ -58,5 +59,13 @@ export class TeacherController{
     @Delete("/:id")
     deleteTeacher(@Param("id",ParseIntPipe) id:number){
         return this.TeacherService.deleteTeacher(id);
+    }
+
+    @Patch("/")
+    @ApiResponse({
+        type: String
+    })
+    login(@Body() data:TeacherSignInRequest){
+        return this.TeacherService.signIn(data);
     }
 }

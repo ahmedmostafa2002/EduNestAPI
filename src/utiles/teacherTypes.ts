@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmpty, IsNotEmpty, IsOptional, Min, MinLength } from "class-validator";
+import { IsEmpty, IsNotEmpty, IsOptional, Matches, Min, MinLength } from "class-validator";
 
 export class TeacherRequest {
 
@@ -7,7 +7,12 @@ export class TeacherRequest {
     @IsNotEmpty()
     @MinLength(3) 
     name: string;
-
+    @ApiProperty()
+    @Matches(/^[a-zA-Z0-9]+@gmail.com$/)
+    email:string;
+    @ApiProperty()
+    @MinLength(8)
+    password:string;
     @ApiProperty()
     salary: number;
 
@@ -21,6 +26,7 @@ export class Teacher extends TeacherRequest {
     @ApiProperty()
     id: number;
 }
+
 
 export class TeacherUpdateRequest{
    
@@ -38,3 +44,11 @@ export class TeacherUpdateRequest{
     @Min(16)
     age: number;
 }
+
+export class TeacherSignInRequest{
+    @ApiProperty()
+    email:string;
+    @ApiProperty()
+    password:string;
+}
+
