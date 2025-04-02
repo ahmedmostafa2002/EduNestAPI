@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Put } from "@nestjs/common";
 import { SchoolsService } from "./schools.service";
 import { ApiResponse } from "@nestjs/swagger";
-import { School, SchoolAnalytics, SchoolRequest, SchoolUpdateRequest } from "src/utiles/schoolsTypes";
+import { SchoolDto } from "./dtos/schoolDto";
+import { SchoolAnalytics } from "./dtos/schoolAnalyticsDto";
+import { SchoolUpdateRequest } from "./dtos/schoolUpdateReq";
 
 @Controller('/Schools')
 export class SchoolsController{
@@ -9,49 +11,41 @@ constructor(private readonly SchoolsService:SchoolsService){}
 
     @Get("/")
     @ApiResponse({
-        type:School,
+        type:SchoolDto,
         isArray:true
     })
-    getSchools(){
-        return this.SchoolsService.getSchools();
+    async getSchools(){
+        return await this.SchoolsService.getSchools();
     }
 
     @Get("/analytics")
     @ApiResponse({
         type:SchoolAnalytics
     })
-    getAnalytics(){
-        return this.SchoolsService.getAnalytics();
+    async getAnalytics(){
+        return await this.SchoolsService.getAnalytics();
     }
 
     @Get('/:id')
     @ApiResponse({
-        type:School
+        type:SchoolDto
     })
-    getSchoolById(@Param("id", ParseIntPipe) id:number){
-        return this.SchoolsService.getSchoolById(id);
-    }
-
-    @Post("/")
-    @ApiResponse({
-        type:School
-    })
-    addSchool(@Body() info:SchoolRequest){
-        return this.SchoolsService.addSchool(info)
+    async getSchoolById(@Param("id") id:string){
+        return await this.SchoolsService.getSchoolById(id);
     }
     @Put("/:id")
     @ApiResponse({
-        type:School
+        type:SchoolDto
     })
-    updateSchool(@Param("id", ParseIntPipe)id:number, @Body() newData:SchoolUpdateRequest){
-        return this.SchoolsService.updateSchool(id,newData);
+    async updateSchool(@Param("id")id:string, @Body() newData:SchoolUpdateRequest){
+        return await this.SchoolsService.updateSchool(id,newData);
     }
 
     @Delete("/:id")
     @ApiResponse({
-        type:School
+        type:SchoolDto
     })
-    deleteSchool(@Param("id",ParseIntPipe) id:number){
-        return this.SchoolsService.deleteProjct(id);
+    async deleteSchool(@Param("id") id:string){
+        return await this.SchoolsService.deleteProjct(id);
     }
 }

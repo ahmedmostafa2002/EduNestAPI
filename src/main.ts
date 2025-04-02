@@ -1,17 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
-
-dotenv.config();
+import { AllExceptionFilter } from './exceptions/allException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new AllExceptionFilter())
 
   const config = new DocumentBuilder()
-  .setTitle('Nest Js API')
+  .setTitle('EduNestAPI')
   .setVersion('1.0')
   .addBearerAuth()
   .build();

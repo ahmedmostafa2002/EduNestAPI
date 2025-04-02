@@ -1,71 +1,60 @@
-import { Body, Controller, Delete, Get, Param, ParseFloatPipe, ParseIntPipe, Patch, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Put, Req } from "@nestjs/common";
 import { TeacherService } from "./teachers.service";
 import { ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
-import { Teacher, TeacherRequest, TeacherSignInRequest, TeacherUpdateRequest } from "src/utiles/teacherTypes";
-
+import { Request } from "express";
+import { TeacherDto } from "./dtos/teacherDto";
+import { TeacherUpdateRequest } from "./dtos/teacherUpdateReq";
 
 @Controller('/Teachers')
+@ApiBearerAuth()
 export class TeacherController{
     constructor(private readonly TeacherService: TeacherService){}
 
     @ApiResponse({
-        type: Teacher,
+        type: TeacherDto,
         isArray: true
     })
-    @ApiBearerAuth()
     @Get('/')
     getTeachers(){
         return this.TeacherService.getTeachers();
     }
     @ApiResponse({
-        type: Teacher
+        type: TeacherDto
     })
     @Get("/highest-paid")
     getHighestPaid(){
         return this.TeacherService.getHighstPaid();
     }
+    @Get("/profile")
+    async GetProfile(@Req() req:Request){
+        return await this.TeacherService.getProfile(req["teacher"]);
+    }
+
     @ApiResponse({
-        type: Teacher
+        type: TeacherDto
     })
     @Get('/:id')
-    getTeacher(@Param("id",ParseIntPipe) id:number){
+    getTeacher(@Param("id") id:string){
         return this.TeacherService.getTeacher(id)
     }
 
-
     @ApiResponse({
-        type: Teacher
-    })
-    @Post()
-    addTeacher(@Body() emp:TeacherRequest){
-        return this.TeacherService.addTeacher(emp);
-    }
-
-    @ApiResponse({
-        type: Teacher
+        type: TeacherDto
     })
     @Put("/:id")
-    updateTeacher(@Param("id",ParseFloatPipe) id:number ,
+    updateTeacher(@Param("id") id:string ,
      @Body() data:TeacherUpdateRequest){
         return this.TeacherService.updateTeacher(
             id,
             data
         )
     }
-
     @ApiResponse({
-        type: Teacher
+        type: TeacherDto
     })
     @Delete("/:id")
-    deleteTeacher(@Param("id",ParseIntPipe) id:number){
+    deleteTeacher(@Param("id") id:string){
         return this.TeacherService.deleteTeacher(id);
     }
 
-    @Patch("/")
-    @ApiResponse({
-        type: String
-    })
-    login(@Body() data:TeacherSignInRequest){
-        return this.TeacherService.signIn(data);
-    }
 }

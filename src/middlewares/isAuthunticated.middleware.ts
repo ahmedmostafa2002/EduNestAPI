@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/commo
 import { ConfigService } from "@nestjs/config";
 import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
+import { JPayload } from "src/utiles/payloadJwtInterface";
 
 @Injectable()
 export class IsAuthenticatedMiddleware implements NestMiddleware{
@@ -17,7 +18,9 @@ export class IsAuthenticatedMiddleware implements NestMiddleware{
             throw new UnauthorizedException()
 
         try{
-            jwt.verify(token,this.configservice.get<string>("JWT_KEY")!);
+            const jwtPayload = jwt.verify(token,this.configservice.get<string>("JWT_KEY")!) as JPayload;
+            req["teacher"] = jwtPayload;
+            // console.log(req["teacher"]);
         }catch(err){
             throw new UnauthorizedException()
         }

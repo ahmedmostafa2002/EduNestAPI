@@ -2,15 +2,25 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { TeachersModule } from './modules/teachers/teachers.module';
 import { SchoolsModule } from './modules/schools/schools.module';
 import { LoggerMiddleware } from './middlewares/logger.midleware';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IsAuthenticatedMiddleware } from './middlewares/isAuthunticated.middleware';
-
+import { CustomHeaderMiddleware } from './middlewares/custom.middleware';
+import { MongooseModule } from '@nestjs/mongoose';
+import modules from './index';
+import { TeacherController } from './modules/teachers/teachers.controller';
 
 @Module({
-  imports: [TeachersModule,SchoolsModule,
+  imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-    })
+    }),
+    MongooseModule.forRootAsync({
+      useFactory:async (configService:ConfigService)=>({
+        uri:configService.get<string>("DB_URI")
+      }),
+      inject:[ConfigService]
+    }),
+    ...modules
   ],
   controllers: [],
   providers: [],
@@ -20,6 +30,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(LoggerMiddleware)
       .forRoutes('/');
-    consumer.apply(IsAuthenticatedMiddleware).forRoutes({path:"/teachers",method:RequestMethod.GET});
+    consumer.apply(IsAuthenticatedMiddleware).forRoutes(TeacherController);
+    consumer.apply(CustomHeaderMiddleware).forRoutes("/");
   }
 }
